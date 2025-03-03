@@ -1,8 +1,14 @@
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//Log.Logger = new LoggerConfiguration().MinimumLevel.Debug().
+    //WriteTo.File("log/villaLogs.txt",rollingInterval: RollingInterval.Day/*Cada cuanto se debe de crear un archivo*/).CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 
