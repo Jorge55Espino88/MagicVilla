@@ -1,10 +1,16 @@
+using MagicVilla_Web;
+using MagicVilla_Web.Services.IServices;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+builder.Services.AddHttpClient<IVillaService, IVillaService>();
+builder.Services.AddScoped<IVillaService, IVillaService>();
 
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
