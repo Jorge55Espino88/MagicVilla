@@ -4,6 +4,7 @@ using MagicVilla_Web.Services.IServices;
 using Newtonsoft.Json;
 using System;
 using System.Text;
+using System.Diagnostics;
 
 namespace MagicVilla_Web.Services
 {
@@ -18,20 +19,20 @@ namespace MagicVilla_Web.Services
             HttpClient = httpClient;
         }
 
-        public async Task<T> SendAsync<T>(APIRequest aPIRequest)
+        public async Task<T> SendAsync<T>(APIRequest apiRequest)
         {
             try
             {
                 var client = HttpClient.CreateClient("MagicAPI");
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Headers.Add("Accept", "application/json");
-                message.RequestUri = new Uri(aPIRequest.URL);
-                if(aPIRequest.Data != null)
+                message.RequestUri = new Uri(apiRequest.URL);
+                if(apiRequest.Data != null)
                 {
-                    message.Content = new StringContent(JsonConvert.SerializeObject(aPIRequest.Data), Encoding.UTF8, "application/json");
+                    message.Content = new StringContent(JsonConvert.SerializeObject(apiRequest.Data), Encoding.UTF8, "application/json");
                 }
 
-                switch (aPIRequest.APIType)
+                switch (apiRequest.APIType)
                 {
                     case SD.APIType.POST:
                         message.Method = HttpMethod.Post;
