@@ -176,7 +176,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
-                return NoContent();
+                return Ok(_response);
             }
             catch (Exception ex)
             {

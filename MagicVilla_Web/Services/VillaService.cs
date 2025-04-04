@@ -2,7 +2,6 @@
 using MagicVilla_Web.Models;
 using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
-using static MagicVilla_Utility.SD;
 
 namespace MagicVilla_Web.Services
 {
@@ -33,7 +32,7 @@ namespace MagicVilla_Web.Services
             return SendAsync<T>(new APIRequest()
             {
                 APIType =SD.APIType.DELETE,
-                URL = villaURL + "/api/VillaAPI/id"
+                URL = villaURL + "/api/VillaAPI/" + id
             });
         }
 
