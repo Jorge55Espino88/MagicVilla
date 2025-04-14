@@ -1,0 +1,81 @@
+Explicación del Método
+Buscar al usuario en la base de datos:
+
+var user = _db.LocalUsers.FirstOrDefault(
+    u => u.UserName.ToLower() == loginRequest.UserName.ToLower() && 
+    u.Password == loginRequest.Password);
+
+Aquí se está buscando un usuario en la base de datos (_db.LocalUsers) que coincida con el nombre de usuario y la contraseña proporcionados en loginRequest.
+
+FirstOrDefault devuelve el primer usuario que cumple con la condición o null si no se encuentra ninguno.
+Se utiliza ToLower() para hacer la comparación de manera insensible a mayúsculas y minúsculas.
+
+2) Verificar si el usuario fue encontrado:
+if (user == null) 
+    return null;
+
+Si no se encontró un usuario (user es null), el método retorna null, indicando que la autenticación falló.
+
+3) Generar el token JWT:
+var tokenHandler = new JwtSecurityTokenHandler();
+Se crea una instancia de JwtSecurityTokenHandler, que es responsable de crear y validar tokens JWT.
+
+4) Codificar Clave secreta
+var key = Encoding.ASCII.GetBytes(secretKey);
+La clave secreta (secretKey) se convierte en un arreglo de bytes utilizando la codificación ASCII. Esta clave se usará para firmar el token.
+
+5) Definir el descriptor del token:
+var tokenDescriptor = new SecurityTokenDescriptor
+{
+    Subject = new ClaimsIdentity(new Claim[]
+    {
+        new Claim(ClaimTypes.Name, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, user.Role),
+    }),
+    Expires = DateTime.UtcNow.AddDays(7),
+    SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+};
+
+Se crea un SecurityTokenDescriptor, que describe cómo se debe crear el token.
+
+Subject: Se define un ClaimsIdentity, que contiene una colección de Claim. En este caso, se añaden dos claims:
+ClaimTypes.Name: El ID del usuario.
+ClaimTypes.Role: El rol del usuario.
+Expires: Se establece la fecha de expiración del token, que es 7 días a partir de la fecha actual.
+SigningCredentials: Se especifica cómo se firmará el token. Se utiliza una clave simétrica (SymmetricSecurityKey) y el algoritmo de firma HMAC SHA-256.
+
+
+6) Crear el token:
+var token = tokenHandler.CreateToken(tokenDescriptor);
+Se llama al método CreateToken del tokenHandler para generar el token JWT utilizando el descriptor definido anteriormente.
+
+
+7) Preparar la respuesta de inicio de sesión:
+LoginResponseDTO loginResponseDTO = new LoginResponseDTO()
+{
+    Token = tokenHandler.WriteToken(token),
+    User = user
+};
+
+Se crea un objeto LoginResponseDTO que contendrá el token como una cadena (usando WriteToken) y el objeto user que representa al usuario autenticado.
+
+
+8) Retornar la respuesta:
+return loginResponseDTO;
+Finalmente, se retorna el objeto loginResponseDTO, que incluye el token y la información del usuario.
+
+--------------------------------------------------------------------------------------------
+Términos Relacionados con JWT
+JWT (JSON Web Token): Es un estándar abierto (RFC 7519) que define un formato compacto y autónomo para transmitir información de manera segura entre partes como un objeto JSON. Esta información puede ser verificada y confiable porque está firmada digitalmente.
+
+Claims: Son declaraciones sobre una entidad (generalmente, el usuario) y metadatos adicionales. Los claims pueden incluir información como el ID del usuario, su rol, permisos, etc. En el ejemplo, se utilizan claims para almacenar el ID y el rol del usuario.
+
+ClaimsIdentity: Representa una identidad que contiene una colección de claims. Se utiliza para crear el contexto de seguridad del usuario.
+
+SecurityTokenDescriptor: Es un objeto que describe cómo se debe crear un token, incluyendo su contenido (claims), fecha de expiración y credenciales de firma.
+
+SigningCredentials: Contiene la información necesaria para firmar el token, incluyendo la clave y el algoritmo de firma.
+
+SymmetricSecurityKey: Es una clave que se utiliza para firmar y validar el token. En este caso, se utiliza una clave simétrica.
+
+

@@ -36,13 +36,20 @@ namespace MagicVilla_VillaAPI.Repository
                 u => u.UserName.ToLower() == loginRequest.UserName.ToLower() && 
                 u.Password == loginRequest.Password);
 
-            if (user == null) 
-                return null;
+            if (user == null)
+            {
+                return new LoginResponseDTO
+                {
+                    Token = "",
+                    User = null
+                };
+            }
+                
 
             //if user was found, generate jwt token
-            var tokenHandler = new JwtSecurityTokenHandler(); //Si se encontró un usuario, se crea una instancia de JwtSecurityTokenHandler, que es una clase que se utiliza para crear y validar JWTs.
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-            var key = Encoding.ASCII.GetBytes(secretKey); //Aquí se convierte una clave secreta (secretKey) en un arreglo de bytes utilizando la codificación ASCII. Esta clave se utilizará para firmar el token JWT, asegurando que no pueda ser alterado.
+            var key = Encoding.ASCII.GetBytes(secretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
