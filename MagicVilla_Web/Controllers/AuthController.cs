@@ -29,9 +29,9 @@ namespace MagicVilla_Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Reguster()
+        public IActionResult Register()
         {
-            LoginRequestDto obj = new();
+            RegisterationRequestDTO obj = new();
             return View(obj);
         }
 
