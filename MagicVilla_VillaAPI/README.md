@@ -9,4 +9,4 @@
 1. Se creo la clase de DTO para Villa
 1. Se modificó el get para que maneje todo en DTO
 1. Se creo la caarpeta de Data y la clase VillaStore para que los datos provengan de ahi y no directamente del get
-1. Se creo el endpoint que trae solo un record por id
+1. Se creo el endpoint que trae solo un record por id y obtener lo necesario
